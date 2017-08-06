@@ -1,0 +1,13 @@
+[http]
+	sslCAInfo = E:/pcdemo/Git/mingw32/ssl/certs/ca-bundle.crt
+[diff "astextplain"]
+	textconv = astextplain
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
+	process = git-lfs filter-process
+[pack]
+	packsizelimit = 2g
+[credential]
+	helper = manager
