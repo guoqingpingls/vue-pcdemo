@@ -32,9 +32,11 @@
                     <div class='index-board-item-inner'>
                         <h2>{{ item.title }}</h2>
                         <p>{{ item.description }}</p>
-                        <button class='index-board-button'>
-                            <a>立即购买</a>
-                        </button>
+                        <router-link :to="{path: item.tokey}">
+                            <button class='index-board-button'>
+                                <a>立即购买</a>
+                            </button>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -71,12 +73,12 @@ export default{
         {
           src: require('../assets/slideShow/pic3.jpg'),
           title: 'the third image',
-          href: 'http://www.baidu.com'
+          href: 'detail/publish'
         },
         {
           src: require('../assets/slideShow/pic4.jpg'),
           title: 'the forth image',
-          href: 'http://vue.js'
+          href: 'detail/forecast'
         }
       ],
       productList: {
@@ -85,20 +87,20 @@ export default{
           list: [
             {
               name: '数据统计',
-              url: 'http://starcraft.com'
+              url: 'detail/count'
             },
             {
               name: '数据预测',
-              url: 'http://warcraft.com'
+              url: 'detail/forecast'
             },
             {
               name: '流量分析',
-              url: 'http://overwatch.com',
+              url: 'detail/analysis',
               hot: true
             },
             {
               name: '广告发布',
-              url: 'http://hearstone.com'
+              url: 'detail/publish'
             }
           ]
         },
@@ -246,6 +248,12 @@ export default{
     }
     .index-board-button {
         margin-top: 20px;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        color: #fff;
+        background: #4fc08d;
+        border: none;
     }
     .news-item {
         width: 230px;
