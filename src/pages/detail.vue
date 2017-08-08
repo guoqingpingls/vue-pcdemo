@@ -122,6 +122,15 @@ export default {
         display: inline-block;
         width: 75%;
     }
+    .sales-board-line-right .button {
+        width: 100px;
+        background-color: #4fc08d;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 4px;
+        cursor: pointer;
+    }
     .sales-board-des {
       border-top: 20px solid #f0f2f5;
       padding: 15px 20px;

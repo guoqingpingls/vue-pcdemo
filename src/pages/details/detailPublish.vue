@@ -10,6 +10,7 @@
                   购买数量：
               </div>
               <div class="sales-board-line-right">
+                <v-counter :max='20' :min='1' @on-change="dealChangeParam('purchaseNumber', $event)"></v-counter>
               </div>
           </div>
           <div class="sales-board-line">
@@ -17,7 +18,7 @@
                   行业：
               </div>
               <div class="sales-board-line-right">
-                <v-selection :selections='tradeList' @on-change='onChange'></v-selection>
+                <v-selection :selections='tradeList' @on-change="dealChangeParam('purchaseTrade', $event)"></v-selection>
               </div>
           </div>
           <div class="sales-board-line">
@@ -25,7 +26,7 @@
                   产品版本：
               </div>
               <div class="sales-board-line-right">
-                <v-chooser :chooseList='versionList' @choose-change = 'chooseChange'></v-chooser>
+                <v-chooser :chooseList='versionList' @on-change = "dealChangeParam('purchaseVersion', $event)"></v-chooser>
               </div>
           </div>
           <div class="sales-board-line">
@@ -252,12 +253,12 @@
 
 <script>
 import VSelection from '../../components/base/selection'
-// import VCounter from '../../components/base/counter'
+import VCounter from '../../components/base/counter'
 import VChooser from '../../components/base/chooser'
 export default {
   components: {
     VSelection,
-  //   VCounter,
+    VCounter,
     VChooser
   },
   data () {
@@ -301,15 +302,15 @@ export default {
           label: '专家版',
           value: 3
         }
-      ]
+      ],
+      purchaseNumber: 0,
+      purchaseTrade: {},
+      purchaseVersion: {}
     }
   },
   methods: {
-    onChange (p) {
-      console.log(p)
-    },
-    chooseChange (p) {
-      console.log(p)
+    dealChangeParam (attr, value) {
+      this[attr] = value
     }
   }
 }

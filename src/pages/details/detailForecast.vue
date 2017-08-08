@@ -10,6 +10,7 @@
                   购买数量：
               </div>
               <div class="sales-board-line-right">
+                <v-counter :max='100' :min='1' @on-change="dealChangeParam('purchaseNumber', $event)"></v-counter>
               </div>
           </div>
           <div class="sales-board-line">
@@ -17,7 +18,7 @@
                   媒介：
               </div>
               <div class="sales-board-line-right">
-                <v-chooser :chooseList='versionList' @choose-change='chooseChange' :chooseType = '1'></v-chooser>
+                <v-chooser :chooseList='versionList' @on-change="dealChangeParam('purchaseVersion', $event)" :chooseType = '1'></v-chooser>
               </div>
           </div>
           <div class="sales-board-line">
@@ -57,11 +58,11 @@
 </template>
 
 <script>
-// import VCounter from '../../components/base/counter'
+import VCounter from '../../components/base/counter'
 import VChooser from '../../components/base/chooser'
 export default {
   components: {
-  //   VCounter,
+    VCounter,
     VChooser
   },
   data () {
@@ -83,12 +84,15 @@ export default {
           label: '邮件',
           value: 3
         }
-      ]
+      ],
+      purchaseNumber: 1,
+      purchaseVersion: [],
+      totalPrice: 0
     }
   },
   methods: {
-    chooseChange (p) {
-      console.log(p)
+    dealChangeParam (attr, value) {
+      this[attr] = value
     }
   }
 }

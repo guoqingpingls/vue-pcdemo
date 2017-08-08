@@ -10,7 +10,7 @@
                   产品类型：
               </div>
               <div class="sales-board-line-right">
-                <v-chooser :chooseList='buyTypes' @choose-change = "chooseChange"></v-chooser>
+                <v-chooser :chooseList='buyTypes' @on-change = "dealChangeParam('purchaseType', $event)"></v-chooser>
               </div>
           </div>
           <div class="sales-board-line">
@@ -18,7 +18,7 @@
                   适用地区：
               </div>
               <div class="sales-board-line-right">
-                  <v-selection :selections="districts" @on-change='onChange'></v-selection>
+                  <v-selection :selections="districts" @on-change="dealChangeParam('purchaseArea', $event)"></v-selection>
               </div>
           </div>
           <div class="sales-board-line">
@@ -297,11 +297,8 @@ export default {
     }
   },
   methods: {
-    onChange (p) {
-      console.log(p)
-    },
-    chooseChange (p) {
-      console.log(p)
+    dealChangeParam (attr, value) {
+      this[attr] = value
     }
   }
 }

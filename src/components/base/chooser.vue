@@ -35,7 +35,7 @@ export default {
     checkChoose (index) {
       if (this.chooseType === 0) {
         this.nowIndex = index
-        this.$emit('choose-change', this.chooseList[this.nowIndex])
+        this.$emit('on-change', this.chooseList[this.nowIndex])
       } else {
         if (this.nowIndex.indexOf(index) === -1) {
           this.nowIndex.push(index)
@@ -47,7 +47,7 @@ export default {
         let newObjArray = _.map(this.nowIndex, (idx) => {
           return this.chooseList[idx]
         })
-        this.$emit('choose-change', newObjArray)
+        this.$emit('on-change', newObjArray)
       }
     }
   },
@@ -55,7 +55,7 @@ export default {
     if (this.chooseType === 0) {
       this.nowIndex = 0
     } else if (this.chooseType === 1) {
-      this.nowIndex = []
+      this.nowIndex = [0]
     }
   }
 }

@@ -10,6 +10,7 @@
                   购买数量：
               </div>
               <div class="sales-board-line-right">
+                <v-counter :max='20' :min='1' @on-change="dealChangeParam('purchaseNumber', $event)"></v-counter>
               </div>
           </div>
           <div class="sales-board-line">
@@ -17,7 +18,7 @@
                   产品类型：
               </div>
               <div class="sales-board-line-right">
-                  <v-selection :selections='buyTypes' @on-change='onChange'></v-selection>
+                  <v-selection :selections='buyTypes' @on-change="dealChangeParam('purchaseType', $event)"></v-selection>
               </div>
           </div>
           <div class="sales-board-line">
@@ -25,7 +26,7 @@
                   有效时间：
               </div>
               <div class="sales-board-line-right">
-                 <v-chooser :chooseList='periodList' @choose-change='chooseChange' :chooseType='0'></v-chooser>
+                 <v-chooser :chooseList='periodList' @on-change="dealChangeParam('purchaseTime', $event)" :chooseType='0'></v-chooser>
               </div>
           </div>
           <div class="sales-board-line">
@@ -33,7 +34,7 @@
                   产品版本：
               </div>
               <div class="sales-board-line-right">
-                 <v-chooser :chooseList='versionList' @choose-change='productVersionChange' :chooseType='1'></v-chooser>
+                 <v-chooser :chooseList='versionList' @on-change="dealChangeParam('purchaseVersion', $event)" :chooseType='1'></v-chooser>
               </div>
           </div>
           <div class="sales-board-line">
@@ -107,9 +108,8 @@
 
 <script>
 import VSelection from '../../components/base/selection'
-// import VCounter from '../../components/base/counter'
+import VCounter from '../../components/base/counter'
 import VChooser from '../../components/base/chooser'
-// import VMulChooser from '../../components/base/multiplyChooser'
 import myDialog from '../../components/base/myDialog'
 // import BankChooser from '../../components/bankChooser'
 // import CheckOrder from '../../components/checkOrder'
@@ -118,10 +118,8 @@ export default {
   components: {
     VSelection,
     VChooser,
+    VCounter,
     myDialog
-    // VCounter,
-    // VMulChooser,
-    // MyDialog: Dialog,
     // BankChooser,
     // CheckOrder
   },
@@ -173,18 +171,16 @@ export default {
           label: '高级版',
           value: 2
         }
-      ]
+      ],
+      purchaseNumber: 0,
+      purchaseType: {},
+      purchaseTime: {},
+      purchaseVersion: []
     }
   },
   methods: {
-    onChange (value) {
-      console.log(value)
-    },
-    chooseChange (p) {
-      console.log(p)
-    },
-    productVersionChange (p) {
-      console.log(p)
+    dealChangeParam (attr, value) {
+      this[attr] = value
     }
   }
 }
