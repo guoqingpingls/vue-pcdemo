@@ -293,7 +293,9 @@ export default {
           label: '重庆',
           value: 5
         }
-      ]
+      ],
+      purchaseType: {},
+      purchaseArea: {}
     }
   },
   methods: {
