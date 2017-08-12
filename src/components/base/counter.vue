@@ -67,7 +67,7 @@ export default {
   .counter-btn {
     display: inline-block;
     border: 1px solid #ccc;
-    padding: 4px 10px;
+    padding: 4px 10px 5px 10px;
     cursor: pointer;
   }
   .counter-btn:hover {
@@ -82,8 +82,8 @@ export default {
   }
   .counter-show input {
     width: 40px;
-    height: 22px;
-    line-height: 22px;
+    height: 23px;
+    line-height: 23px;
     padding: 0;
     text-align: center;
     border: none;

@@ -42,13 +42,13 @@
                   总价：
               </div>
               <div class="sales-board-line-right">
-                  500 元
+                  {{ totalPrice }} 元
               </div>
           </div>
           <div class="sales-board-line">
               <div class="sales-board-line-left">&nbsp;</div>
               <div class="sales-board-line-right">
-                  <div class="button">
+                  <div class="button" @click='payForProduct'>
                     立即购买
                   </div>
               </div>
@@ -248,6 +248,33 @@
           </tbody>
       </table>
       </div>
+      <my-dialog :dialog-show='isShowPayDialog' @close-dialog='closePayDialog'>
+        <table class="buy-dialog-table">
+          <tr>
+            <th>购买数量</th>
+            <th>行业</th>
+            <th>产品版本</th>
+            <th>有效时间</th>
+            <th>总价</th>
+          </tr>
+          <tr>
+            <td>{{ purchaseNumber }}</td>
+            <td>{{ purchaseTrade.label }}</td>
+            <td>{{ purchaseVersion.label }}</td>
+            <td>半年</td>
+            <td>{{ totalPrice }}</td>
+          </tr>
+        </table>
+        <h3 class="buy-dialog-title">请选择银行</h3>
+        <bank-chooser @bank-change='getBankId'></bank-chooser>
+        <div class="button buy-dialog-btn" @click='checkOrder'>
+          确认购买
+        </div>
+      </my-dialog>
+      <check-order :is-show-check-dialog='isShowCheckDialog' @close-check-dialog='closeCheckDialog' :order-id='orderId'></check-order>
+      <my-dialog :dialog-show='isShowErrorLog' @close-dialog='closeErrorLog'>
+        支付失败！
+      </my-dialog>
   </div>
 </template>
 
@@ -255,11 +282,17 @@
 import VSelection from '../../components/base/selection'
 import VCounter from '../../components/base/counter'
 import VChooser from '../../components/base/chooser'
+import CheckOrder from '../../components/base/checkOrder'
+import myDialog from '../../components/base/myDialog'
+import BankChooser from '../../components/base/bankChooser'
 export default {
   components: {
     VSelection,
     VCounter,
-    VChooser
+    VChooser,
+    CheckOrder,
+    BankChooser,
+    myDialog
   },
   data () {
     return {
@@ -305,13 +338,91 @@ export default {
       ],
       purchaseNumber: 0,
       purchaseTrade: {},
-      purchaseVersion: {}
+      purchaseVersion: {},
+      totalPrice: 0,
+      isShowPayDialog: false,
+      isShowCheckDialog: false,
+      bankId: null,
+      orderId: null,
+      isShowErrorLog: false
     }
   },
   methods: {
     dealChangeParam (attr, value) {
       this[attr] = value
+      this.getTotalPrice()
+    },
+    getTotalPrice () {
+    //   let reqParam = {
+    //     purchaseNumber: this.purchaseNumber,
+    //     purchaseTrade: this.purchaseTrade.value,
+    //     purchaseVersion: this.purchaseVersion.value
+    //   }
+    //   this.$http.post('/api/getPrice', reqParam).then((res) => {
+    //     console.log(res)
+    //   }, (err) => {
+    //     console.log(err)
+    //   })
+      this.$http.get('/api/getPrice').then((res) => {
+        this.totalPrice = res.body.totalPrice
+        console.log(res)
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    closePayDialog () {
+    //   console.log('close-pay-dialog')
+      this.isShowPayDialog = false
+    },
+    getBankId (bank) {
+      this.bankId = bank.id
+      console.log(this.bankId)
+    },
+    checkOrder () {
+      // 获取orderId
+    //   console.log('get order id')
+    //   let reqParam = {
+    //     purchaseNumber: this.purchaseNumber,
+    //     purchaseTrade: this.purchaseTrade.value,
+    //     purchaseVersion: this.purchaseVersion.value,
+    //     bankId: this.bankId
+    //   }
+    //   this.$http.post('/api/createOrder', reqParam).then((res) => {
+    //     console.log(res)
+    //     this.isShowPayDialog = false
+    //     this.isShowCheckDialog = true
+    //     this.orderId = res.body.orderId
+    //   }, (err) => {
+    //     console.log(err)
+    //     this.isShowPayDialog = false
+    //     this.isShowErrorLog = true
+    //   })
+      this.$http.get('/api/createOrder').then((res) => {
+        console.log(res)
+        this.isShowPayDialog = false
+        this.isShowCheckDialog = true
+        this.orderId = res.body.orderId
+      }, (err) => {
+        console.log(err)
+        this.isShowPayDialog = false
+        this.isShowErrorLog = true
+      })
+    },
+    closeCheckDialog () {
+      this.isShowCheckDialog = false
+    },
+    closeErrorLog () {
+      this.isShowErrorLog = false
+    },
+    payForProduct () {
+      this.isShowPayDialog = true
     }
+  },
+  mounted () {
+    this.purchaseNumber = 1
+    this.purchaseTrade = this.tradeList[0]
+    this.purchaseVersion = this.versionList[0]
+    this.getTotalPrice()
   }
 }
 </script>

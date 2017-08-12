@@ -34,13 +34,13 @@
                   总价：
               </div>
               <div class="sales-board-line-right">
-                  500 元
+                  {{ totalPrice }} 元
               </div>
           </div>
           <div class="sales-board-line">
               <div class="sales-board-line-left">&nbsp;</div>
               <div class="sales-board-line-right">
-                  <div class="button">
+                  <div class="button" @click='showPayDialog'>
                     立即购买
                   </div>
               </div>
@@ -240,17 +240,48 @@
           </tbody>
       </table>
       </div>
+      <my-dialog :dialog-show='isShowPayDialog' @close-dialog='closePayDialog'>
+        <table class="buy-dialog-table">
+          <tr>
+            <th>产品类型</th>
+            <th>适用地区</th>
+            <th>有效时间</th>
+            <th>总价</th>
+          </tr>
+          <tr>
+            <td>{{ purchaseType.label }}</td>
+            <td>{{ purchaseArea.label }}</td>
+            <td>半年</td>
+            <td>{{ totalPrice }}</td>
+          </tr>
+        </table>
+        <h3 class="buy-dialog-title">请选择银行</h3>
+        <bank-chooser @bank-change='getBankId'></bank-chooser>
+        <div class="button buy-dialog-btn" @click='checkOrder'>
+          确认购买
+        </div>
+      </my-dialog>
+      <check-order :is-show-check-dialog='isShowCheckDialog' @close-check-dialog='closeCheckDialog' :order-id='orderId'></check-order>
+      <my-dialog :dialog-show='isShowErrorLog' @close-dialog='closeErrorLog'>
+        支付失败！
+      </my-dialog>
   </div>
 </template>
 
 <script>
 import VSelection from '../../components/base/selection'
 import VChooser from '../../components/base/chooser'
+import myDialog from '../../components/base/myDialog'
+import bankChooser from '../../components/base/bankChooser'
+import checkOrder from '../../components/base/checkOrder'
 export default {
   name: 'detailCount',
   components: {
     VChooser,
-    VSelection
+    VSelection,
+    myDialog,
+    bankChooser,
+    checkOrder
   },
   data () {
     return {
@@ -295,13 +326,85 @@ export default {
         }
       ],
       purchaseType: {},
-      purchaseArea: {}
+      purchaseArea: {},
+      totalPrice: 0,
+      isShowPayDialog: false,
+      isShowCheckDialog: false,
+      bankId: null,
+      orderId: null,
+      isShowErrorLog: false
     }
   },
   methods: {
     dealChangeParam (attr, value) {
       this[attr] = value
+      this.getTotalPrice()
+    },
+    getTotalPrice () {
+    //   let reqParam = {
+    //     type: this.purchaseType.value,
+    //     area: this.purchaseArea.value
+    //   }
+    //   this.$http.post('/api/getPrice', reqParam).then((res) => {
+    //     console.log(res)
+    //   }, (err) => {
+    //     console.log(err)
+    //   })
+      this.$http.get('/api/getPrice').then((res) => {
+        this.totalPrice = res.body.totalPrice
+        console.log(res)
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    showPayDialog () {
+      this.isShowPayDialog = true
+    },
+    closePayDialog () {
+      this.isShowPayDialog = false
+    },
+    getBankId (bank) {
+      this.bankId = bank.id
+      console.log(this.bankId)
+    },
+    checkOrder () {
+    //   let reqParam = {
+    //     type: this.purchaseType.value,
+    //     area: this.purchaseArea.value,
+    //     bankId: this.bankId
+    //   }
+    //   this.$http.post('/api/createOrder', reqParam).then((res) => {
+    //     this.isShowPayDialog = false
+    //     this.isShowCheckDialog = true
+    //     this.orderId = res.body.orderId
+    //     console.log(res)
+    //   }, (err) => {
+    //     this.isShowPayDialog = false
+    //     this.isShowErrorLog = true
+    //     console.log(err)
+    //   })
+      this.$http.get('/api/createOrder').then((res) => {
+        this.isShowPayDialog = false
+        this.isShowCheckDialog = true
+        this.orderId = res.body.orderId
+        console.log(res)
+      }, (err) => {
+        this.isShowPayDialog = false
+        this.isShowErrorLog = true
+        console.log(err)
+      })
+    },
+    closeCheckDialog () {
+      this.isShowCheckDialog = false
+    },
+    closeErrorLog () {
+      this.isShowErrorLog = false
     }
+  },
+  mounted () {
+    this.purchaseType = this.buyTypes[0]
+    this.purchaseArea = this.districts[0]
+    this.getTotalPrice()
   }
 }
 </script>

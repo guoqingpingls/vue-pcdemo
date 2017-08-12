@@ -34,13 +34,13 @@
                   总价：
               </div>
               <div class="sales-board-line-right">
-                  500 元
+                  {{ totalPrice }} 元
               </div>
           </div>
           <div class="sales-board-line">
               <div class="sales-board-line-left">&nbsp;</div>
               <div class="sales-board-line-right">
-                  <div class="button">
+                  <div class="button" @click='showPayDialog'>
                     立即购买
                   </div>
               </div>
@@ -54,16 +54,50 @@
 作为预测分析领域的专家，埃里克·西格尔博士深谙预测分析界已经实现和正在发生的事情、面临的问题和将来可能的前景。在《大数据预测》一书中，他结合预测分析的应用实例，对其进行了深入、细致且全面的解读。
 关于预测分析，你想了解的全部，你的生活以及这个世界会因为预测分析改变到什么程度，《大数据预测》都会告诉你。</p>
       </div>
+      <my-dialog :dialog-show='isShowPayDialog' @close-dialog='closePayDialog'>
+        <table class="buy-dialog-table">
+          <tr>
+            <th>购买数量</th>
+            <th>媒介</th>
+            <th>有效时间</th>
+            <th>总价</th>
+          </tr>
+          <tr>
+            <td>{{ purchaseNumber }}</td>
+            <td>
+              <span v-for='(item, index) in purchaseVersion' :key='index'>{{ item.label }}</span>
+            </td>
+            <td>半年</td>
+            <td>{{ totalPrice }}</td>
+          </tr>
+        </table>
+        <h3 class="buy-dialog-title">请选择银行</h3>
+        <bank-chooser @bank-change='getBankId'></bank-chooser>
+        <div class="button buy-dialog-btn" @click='checkOrder'>
+          确认购买
+        </div>
+      </my-dialog>
+      <check-order :is-show-check-dialog='isShowCheckDialog' @close-check-dialog='closeCheckDialog' :order-id='orderId'></check-order>
+      <my-dialog :dialog-show='isShowErrorLog' @close-dialog='closeErrorLog'>
+        支付失败！
+      </my-dialog>
   </div>
 </template>
 
 <script>
 import VCounter from '../../components/base/counter'
 import VChooser from '../../components/base/chooser'
+import myDialog from '../../components/base/myDialog'
+import bankChooser from '../../components/base/bankChooser'
+import checkOrder from '../../components/base/checkOrder'
+// import _ from 'lodash'
 export default {
   components: {
     VCounter,
-    VChooser
+    VChooser,
+    myDialog,
+    bankChooser,
+    checkOrder
   },
   data () {
     return {
@@ -87,13 +121,88 @@ export default {
       ],
       purchaseNumber: 1,
       purchaseVersion: [],
-      totalPrice: 0
+      totalPrice: 0,
+      isShowPayDialog: false,
+      bankId: null,
+      orderId: null,
+      isShowCheckDialog: false,
+      isShowErrorLog: false
     }
   },
   methods: {
     dealChangeParam (attr, value) {
       this[attr] = value
+      this.getTotalPrice()
+    },
+    getTotalPrice () {
+      // let chooseVersionList = _.map(this.purchaseVersion, (idx) => {
+      //   return idx.value
+      // })
+      // let reqParam = {
+      //   number: this.purchaseNumber,
+      //   version: chooseVersionList
+      // }
+      // this.$http.post('/api/getPrice', reqParam).then((res) => {
+      //   console.log(res)
+      // }, (err) => {
+      //   console.log(err)
+      // })
+      this.$http.get('/api/getPrice').then((res) => {
+        console.log(res)
+        this.totalPrice = res.body.totalPrice
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    showPayDialog () {
+      this.isShowPayDialog = true
+    },
+    closePayDialog () {
+      this.isShowPayDialog = false
+    },
+    getBankId (bank) {
+      this.bankId = bank.id
+    },
+    checkOrder () {
+      // let chooseVersionList = _.map(this.purchaseVersion, (idx) => {
+      //   return idx.value
+      // })
+      // let reqParam = {
+      //   number: this.purchaseNumber,
+      //   version: chooseVersionList
+      // }
+      // this.$http.post('/api/createOrder', reqParam).then((res) => {
+      //   this.isShowPayDialog = false
+      //   this.isShowCheckDialog = true
+      //   this.orderId = res.body.orderId
+      //   console.log(this.orderId)
+      // }, (err) => {
+      //   console.log(err)
+      //   this.isShowPayDialog = false
+      //   this.isShowErrorLog = true
+      // })
+      this.$http.get('/api/createOrder').then((res) => {
+        this.isShowPayDialog = false
+        this.isShowCheckDialog = true
+        this.orderId = res.body.orderId
+        console.log(this.orderId)
+      }, (err) => {
+        console.log(err)
+        this.isShowPayDialog = false
+        this.isShowErrorLog = true
+      })
+    },
+    closeCheckDialog () {
+      this.isShowCheckDialog = false
+    },
+    closeErrorLog () {
+      this.isShowErrorLog = false
     }
+  },
+  mounted () {
+    this.purchaseNumber = 1
+    this.purchaseVersion = this.versionList[0]
+    this.getTotalPrice()
   }
 }
 </script>

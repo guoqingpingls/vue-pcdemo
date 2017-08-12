@@ -10,11 +10,9 @@ import DetailAnalysis from './pages/details/detailAnalysis'
 import DetailCount from './pages/details/detailCount'
 import DetailForecast from './pages/details/detailForecast'
 import DetailPublish from './pages/details/detailPublish'
-// import LogForm from './components/base/logForm'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
-// global.$ = global.jquery = $
 let router = new VueRouter({
   mode: 'history',
   routes: [

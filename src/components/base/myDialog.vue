@@ -29,7 +29,6 @@ export default {
   },
   methods: {
     closeDialog () {
-      console.log(this.dialogName)
       this.$emit('close-dialog', this.dialogName)
     }
   }
@@ -54,11 +53,12 @@ export default {
 .dialog-content {
     width: 50%;
     min-width: 415px;
-    min-height: 20%;
+    min-height: 5%;
     background-color:#fff;
     position: fixed;
     top: 20%;
-    margin-left: 25%;
+    left: 50%;
+    margin-left: -25%;
     padding: 2%;
     border: 1px solid #464068;
     line-height: 1.6;
