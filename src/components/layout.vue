@@ -14,6 +14,8 @@
                         <li v-if='userName === ""' @click = 'togDialogShow("regDialogShow")'>注册</li>
                         <li class='nav-pile'>|</li>
                         <li @click = 'togDialogShow("aboutDialogShow")'>关于</li>
+                        <li class='nav-pile'>|</li>
+                        <li><a href='/order'>我的订单</a></li>
                     </ul>
                 </div>
             </div>

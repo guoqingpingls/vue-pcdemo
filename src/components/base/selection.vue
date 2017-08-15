@@ -27,7 +27,7 @@ export default {
       type: Array,
       default: [
         {
-          label: 'text',
+          label: 'test',
           value: 0
         }
       ]
