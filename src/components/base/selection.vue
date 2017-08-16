@@ -14,6 +14,7 @@
   </div>
 </template>
 <script>
+import { eventBus } from '../../eventBus'
 export default {
   name: 'selection',
   data () {
@@ -34,7 +35,9 @@ export default {
     }
   },
   methods: {
-    toggleShow () {
+    toggleShow (event) {
+      event.stopPropagation()
+      eventBus.$emit('reset-component')
       this.isShowList = !this.isShowList
     },
     chooseListItem (index) {
@@ -42,6 +45,11 @@ export default {
       this.isShowList = false
       this.$emit('on-change', this.selections[index])
     }
+  },
+  mounted () {
+    eventBus.$on('reset-component', () => {
+      this.isShowList = false
+    })
   }
 }
 </script>
